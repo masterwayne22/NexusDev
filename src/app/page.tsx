@@ -1,11 +1,11 @@
 import { Sparkles } from "lucide-react";
 import Link from "next/link";
 import { GlassPanel } from "@/components/ui/GlassPanel";
-
+import { SignedIn, SignedOut } from "@clerk/nextjs";
 
 export default function Home() {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center p-4">
+    <div className="flex min-h-screen flex-col items-center justify-center p-4 bg-black">
       <GlassPanel className="max-w-4xl w-full flex flex-col items-center gap-12 py-20 px-8 text-center" variant="default">
         {/* Logo Section */}
         <div className="flex flex-col items-center gap-4">
@@ -24,22 +24,32 @@ export default function Home() {
 
         {/* Action Buttons */}
         <div className="flex flex-col sm:flex-row gap-6">
-          <Link
-            href="/dashboard"
-            className="group relative flex h-14 items-center justify-center gap-3 rounded-2xl bg-white px-8 text-black font-bold transition-all hover:scale-105 active:scale-95"
-          >
-            Enter Dashboard
-            <div className="absolute -inset-1 rounded-2xl bg-gradient-to-r from-blue-400 to-purple-600 opacity-20 blur group-hover:opacity-40 transition-opacity" />
-          </Link>
+          <SignedIn>
+            <Link
+              href="/dashboard"
+              className="group relative flex h-14 items-center justify-center gap-3 rounded-2xl bg-white px-8 text-black font-bold transition-all hover:scale-105 active:scale-95"
+            >
+              Back to Dashboard
+              <div className="absolute -inset-1 rounded-2xl bg-gradient-to-r from-blue-400 to-purple-600 opacity-20 blur group-hover:opacity-40 transition-opacity" />
+            </Link>
+          </SignedIn>
 
-          <a
-            href="https://github.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex h-14 items-center justify-center rounded-2xl border border-white/10 bg-white/5 px-8 font-semibold text-white transition-all hover:bg-white/10 hover:border-white/20"
-          >
-            Star on GitHub
-          </a>
+          <SignedOut>
+            <Link
+              href="/sign-in"
+              className="group relative flex h-14 items-center justify-center gap-3 rounded-2xl bg-white px-8 text-black font-bold transition-all hover:scale-105 active:scale-95"
+            >
+              Get Started
+              <div className="absolute -inset-1 rounded-2xl bg-gradient-to-r from-blue-400 to-purple-600 opacity-20 blur group-hover:opacity-40 transition-opacity" />
+            </Link>
+            
+            <Link
+              href="/sign-in"
+              className="flex h-14 items-center justify-center rounded-2xl border border-white/10 bg-white/5 px-8 font-semibold text-white transition-all hover:bg-white/10 hover:border-white/20"
+            >
+              Sign In
+            </Link>
+          </SignedOut>
         </div>
 
         {/* Features Preview */}

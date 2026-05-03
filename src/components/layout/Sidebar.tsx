@@ -125,12 +125,13 @@ export const Sidebar = () => {
               </div>
             </SignedIn>
             <SignedOut>
-              <SignInButton mode="modal">
-                <button className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-white text-black font-bold transition-all hover:scale-[1.02] active:scale-[0.98]">
-                  <User size={20} />
-                  <span className="font-medium">Sign In</span>
-                </button>
-              </SignInButton>
+              <Link 
+                href="/sign-in"
+                className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-white text-black font-bold transition-all hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-white/10"
+              >
+                <User size={20} />
+                <span className="font-medium">Sign In</span>
+              </Link>
             </SignedOut>
           </div>
         </GlassPanel>
