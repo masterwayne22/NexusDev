@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { GlassPanel } from "@/components/ui/GlassPanel";
-import { ArrowLeft, Code2, Trophy } from "lucide-react";
+import { ArrowLeft, Code2 } from "lucide-react";
+import { LeetCodeStats } from "@/components/dashboard/LeetCodeStats";
 
 export default function LeetCodePage() {
   return (
@@ -25,30 +26,7 @@ export default function LeetCodePage() {
         </Link>
       </header>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <GlassPanel className="p-6">
-          <div className="text-sm font-bold text-green-400 uppercase tracking-widest mb-1">Easy</div>
-          <div className="text-3xl font-black text-white">150</div>
-        </GlassPanel>
-        <GlassPanel className="p-6">
-          <div className="text-sm font-bold text-orange-400 uppercase tracking-widest mb-1">Medium</div>
-          <div className="text-3xl font-black text-white">142</div>
-        </GlassPanel>
-        <GlassPanel className="p-6">
-          <div className="text-sm font-bold text-red-400 uppercase tracking-widest mb-1">Hard</div>
-          <div className="text-3xl font-black text-white">50</div>
-        </GlassPanel>
-      </div>
-
-      <GlassPanel className="p-8 flex flex-col items-center justify-center min-h-[400px]">
-        <div className="text-center space-y-4">
-          <Trophy size={64} className="text-orange-400/20 mx-auto mb-6" />
-          <h2 className="text-2xl font-bold text-white">Rank: Top 5%</h2>
-          <p className="text-white/40 max-w-md mx-auto">
-            Your global ranking and contest rating history will be visualized here once the integration is complete.
-          </p>
-        </div>
-      </GlassPanel>
+      <LeetCodeStats />
     </div>
   );
 }
