@@ -9,4 +9,6 @@ compatibility_flags = ["nodejs_compat"]
 # Configuration for OpenNext
 [build]
 command = "npm run build"
-path = ".open-next"
+
+[assets]
+directory = ".next"
