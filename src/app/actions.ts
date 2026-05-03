@@ -1,6 +1,7 @@
 'use server';
 
 import { clerkClient } from '@clerk/nextjs/server';
+import { revalidatePath } from 'next/cache';
 
 export async function updateUsername(userId: string, type: 'github' | 'leetcode', username: string) {
   const client = await clerkClient();
@@ -9,4 +10,8 @@ export async function updateUsername(userId: string, type: 'github' | 'leetcode'
       [`${type}_username`]: username // Saves as github_username or leetcode_username
     }
   });
+
+  // Force On-Demand Revalidation for relevant paths
+  revalidatePath('/dashboard');
+  revalidatePath('/');
 }
