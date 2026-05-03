@@ -12,6 +12,7 @@ import {
   User
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { UserButton, SignedIn, SignedOut, SignInButton } from "@clerk/nextjs";
 import { GlassPanel } from '../ui/GlassPanel';
 
 export const GitHubIcon = ({ size = 20, className = "" }: { size?: number, className?: string }) => (
@@ -101,17 +102,36 @@ export const Sidebar = () => {
             })}
           </nav>
 
+
+
           {/* Profile Section */}
           <div className="mt-auto pt-4 border-t border-white/5">
-            <div className="flex items-center gap-3 px-2 py-3 hover:bg-white/5 rounded-xl cursor-pointer transition-colors">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-blue-500 to-purple-500 flex items-center justify-center">
-                <User size={20} className="text-white" />
+            <SignedIn>
+              <div className="flex items-center gap-3 px-2 py-3 hover:bg-white/5 rounded-xl transition-colors">
+                <UserButton 
+                  appearance={{
+                    elements: {
+                      userButtonAvatarBox: "w-10 h-10 rounded-full",
+                      userButtonPopoverCard: "bg-[#0a0a0a] border border-white/10 backdrop-blur-xl",
+                      userButtonPopoverActionButtonText: "text-white/80",
+                      userButtonPopoverActionButtonIcon: "text-white/80",
+                    }
+                  }}
+                />
+                <div className="flex flex-col">
+                  <span className="text-sm font-semibold text-white truncate max-w-[120px]">Account</span>
+                  <span className="text-xs text-white/40 italic">Nexus Member</span>
+                </div>
               </div>
-              <div className="flex flex-col">
-                <span className="text-sm font-semibold text-white">Guest User</span>
-                <span className="text-xs text-white/40 italic">Portfolio Mode</span>
-              </div>
-            </div>
+            </SignedIn>
+            <SignedOut>
+              <SignInButton mode="modal">
+                <button className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-white text-black font-bold transition-all hover:scale-[1.02] active:scale-[0.98]">
+                  <User size={20} />
+                  <span className="font-medium">Sign In</span>
+                </button>
+              </SignInButton>
+            </SignedOut>
           </div>
         </GlassPanel>
       </aside>
