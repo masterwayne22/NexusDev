@@ -1,9 +1,11 @@
 import { Sparkles } from "lucide-react";
 import Link from "next/link";
 import { GlassPanel } from "@/components/ui/GlassPanel";
-import { SignedIn, SignedOut } from "@clerk/nextjs";
+import { useAuth } from "@clerk/nextjs";
 
 export default function Home() {
+  const { isLoaded, isSignedIn } = useAuth();
+
   return (
     <div className="flex min-h-screen flex-col items-center justify-center p-4 bg-black">
       <GlassPanel className="max-w-4xl w-full flex flex-col items-center gap-12 py-20 px-8 text-center" variant="default">
@@ -24,7 +26,9 @@ export default function Home() {
 
         {/* Action Buttons */}
         <div className="flex flex-col sm:flex-row gap-6">
-          <SignedIn>
+          {!isLoaded ? (
+            <div className="h-14 w-32 animate-pulse bg-white/5 rounded-2xl" />
+          ) : isSignedIn ? (
             <Link
               href="/dashboard"
               className="group relative flex h-14 items-center justify-center gap-3 rounded-2xl bg-white px-8 text-black font-bold transition-all hover:scale-105 active:scale-95"
@@ -32,24 +36,24 @@ export default function Home() {
               Back to Dashboard
               <div className="absolute -inset-1 rounded-2xl bg-gradient-to-r from-blue-400 to-purple-600 opacity-20 blur group-hover:opacity-40 transition-opacity" />
             </Link>
-          </SignedIn>
-
-          <SignedOut>
-            <Link
-              href="/sign-in"
-              className="group relative flex h-14 items-center justify-center gap-3 rounded-2xl bg-white px-8 text-black font-bold transition-all hover:scale-105 active:scale-95"
-            >
-              Get Started
-              <div className="absolute -inset-1 rounded-2xl bg-gradient-to-r from-blue-400 to-purple-600 opacity-20 blur group-hover:opacity-40 transition-opacity" />
-            </Link>
-            
-            <Link
-              href="/sign-in"
-              className="flex h-14 items-center justify-center rounded-2xl border border-white/10 bg-white/5 px-8 font-semibold text-white transition-all hover:bg-white/10 hover:border-white/20"
-            >
-              Sign In
-            </Link>
-          </SignedOut>
+          ) : (
+            <>
+              <Link
+                href="/sign-in"
+                className="group relative flex h-14 items-center justify-center gap-3 rounded-2xl bg-white px-8 text-black font-bold transition-all hover:scale-105 active:scale-95"
+              >
+                Get Started
+                <div className="absolute -inset-1 rounded-2xl bg-gradient-to-r from-blue-400 to-purple-600 opacity-20 blur group-hover:opacity-40 transition-opacity" />
+              </Link>
+              
+              <Link
+                href="/sign-in"
+                className="flex h-14 items-center justify-center rounded-2xl border border-white/10 bg-white/5 px-8 font-semibold text-white transition-all hover:bg-white/10 hover:border-white/20"
+              >
+                Sign In
+              </Link>
+            </>
+          )}
         </div>
 
         {/* Features Preview */}

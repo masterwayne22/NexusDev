@@ -12,7 +12,7 @@ import {
   User
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { UserButton, SignedIn, SignedOut, SignInButton } from "@clerk/nextjs";
+import { UserButton, useAuth } from "@clerk/nextjs";
 import { GlassPanel } from '../ui/GlassPanel';
 
 export const GitHubIcon = ({ size = 20, className = "" }: { size?: number, className?: string }) => (
@@ -42,6 +42,7 @@ const navItems = [
 export const Sidebar = () => {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
+  const { isLoaded, isSignedIn } = useAuth();
 
   return (
     <>
@@ -103,10 +104,11 @@ export const Sidebar = () => {
           </nav>
 
 
-
           {/* Profile Section */}
           <div className="mt-auto pt-4 border-t border-white/5">
-            <SignedIn>
+            {!isLoaded ? (
+              <div className="h-10 w-full animate-pulse bg-white/5 rounded-xl" />
+            ) : isSignedIn ? (
               <div className="flex items-center gap-3 px-2 py-3 hover:bg-white/5 rounded-xl transition-colors">
                 <UserButton 
                   appearance={{
@@ -123,8 +125,7 @@ export const Sidebar = () => {
                   <span className="text-xs text-white/40 italic">Nexus Member</span>
                 </div>
               </div>
-            </SignedIn>
-            <SignedOut>
+            ) : (
               <Link 
                 href="/sign-in"
                 className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-white text-black font-bold transition-all hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-white/10"
@@ -132,7 +133,7 @@ export const Sidebar = () => {
                 <User size={20} />
                 <span className="font-medium">Sign In</span>
               </Link>
-            </SignedOut>
+            )}
           </div>
         </GlassPanel>
       </aside>
