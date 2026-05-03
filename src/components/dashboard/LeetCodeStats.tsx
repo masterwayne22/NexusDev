@@ -3,8 +3,8 @@
 import React, { useEffect, useState } from 'react';
 import { GlassPanel } from '@/components/ui/GlassPanel';
 import { Code2, Loader2, Link2, Trophy, Flame } from 'lucide-react';
-import { useSession } from '@clerk/nextjs';
-import { updateUserConnections } from '@/app/actions/user';
+import { useSession, useUser } from '@clerk/nextjs';
+import { updateUsername } from '@/app/actions';
 
 interface LeetCodeData {
   username: string;
@@ -16,6 +16,7 @@ interface LeetCodeData {
 }
 
 export const LeetCodeStats = () => {
+  const { user } = useUser();
   const { session } = useSession();
   const [data, setData] = useState<LeetCodeData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -43,8 +44,8 @@ export const LeetCodeStats = () => {
 
     setIsConnecting(true);
     try {
-      await updateUserConnections({ leetcodeUsername: input });
-      // Force session refresh to pick up new metadata
+      if (!user?.id) return;
+      await updateUsername(user.id, 'leetcode', input);
       await session?.reload();
       await fetchStats();
     } catch {

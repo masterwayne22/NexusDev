@@ -3,8 +3,8 @@
 import React, { useEffect, useState } from 'react';
 import { GlassPanel } from '@/components/ui/GlassPanel';
 import { ExternalLink, Loader2, Link2 } from 'lucide-react';
-import { useUser } from '@clerk/nextjs';
-import { updateUserConnections } from '@/app/actions/user';
+import { useUser, useSession } from '@clerk/nextjs';
+import { updateUsername } from '@/app/actions';
 
 interface Stats {
   repos: number;
@@ -16,7 +16,8 @@ interface Stats {
 }
 
 export const GitHubStats = () => {
-  const { user, isLoaded: userLoaded } = useUser();
+  const { user } = useUser();
+  const { session } = useSession();
   const [stats, setStats] = useState<Stats | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -43,11 +44,12 @@ export const GitHubStats = () => {
     
     setIsConnecting(true);
     try {
-      await updateUserConnections({ githubUsername: githubInput });
-      await user?.reload();
+      if (!user?.id) return;
+      await updateUsername(user.id, 'github', githubInput);
+      await session?.reload();
       await fetchStats();
     } catch {
-      setError('Failed to update connection');
+      setError('Failed to link account');
     } finally {
       setIsConnecting(false);
     }

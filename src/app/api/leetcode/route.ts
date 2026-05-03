@@ -8,7 +8,7 @@ export async function GET() {
 
     const client = await clerkClient();
     const user = await client.users.getUser(userId);
-    const username = user.publicMetadata.leetcodeUsername as string;
+    const username = user.publicMetadata.leetcode_username as string;
 
     if (!username) {
       return NextResponse.json({ error: 'LeetCode account not linked' }, { status: 404 });

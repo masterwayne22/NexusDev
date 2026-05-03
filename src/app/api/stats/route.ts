@@ -11,7 +11,7 @@ export async function GET() {
 
     const client = await clerkClient();
     const user = await client.users.getUser(userId);
-    const metadataUsername = user.publicMetadata.githubUsername as string;
+    const metadataUsername = user.publicMetadata.github_username as string;
 
     let githubDataUrl = 'https://api.github.com/user';
     let headers: Record<string, string> = {
