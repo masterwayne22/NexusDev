@@ -2,7 +2,9 @@
 
 import React, { useEffect, useState } from 'react';
 import { GlassPanel } from '@/components/ui/GlassPanel';
-import { ExternalLink, Loader2 } from 'lucide-react';
+import { ExternalLink, Loader2, Link2 } from 'lucide-react';
+import { useUser } from '@clerk/nextjs';
+import { updateUserConnections } from '@/app/actions/user';
 
 interface Stats {
   repos: number;
@@ -14,25 +16,44 @@ interface Stats {
 }
 
 export const GitHubStats = () => {
+  const { user, isLoaded: userLoaded } = useUser();
   const [stats, setStats] = useState<Stats | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [githubInput, setGithubInput] = useState('');
+  const [isConnecting, setIsConnecting] = useState(false);
+
+  const fetchStats = async () => {
+    try {
+      const response = await fetch('/api/stats');
+      if (!response.ok) throw new Error('Failed to fetch stats');
+      const data = await response.json();
+      setStats(data);
+      setError(null);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An error occurred');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleConnect = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!githubInput.trim()) return;
+    
+    setIsConnecting(true);
+    try {
+      await updateUserConnections({ githubUsername: githubInput });
+      await user?.reload();
+      await fetchStats();
+    } catch {
+      setError('Failed to update connection');
+    } finally {
+      setIsConnecting(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchStats = async () => {
-      try {
-        // Using 'octocat' as a default, but this could be dynamic
-        const response = await fetch('/api/stats?username=octocat');
-        if (!response.ok) throw new Error('Failed to fetch stats');
-        const data = await response.json();
-        setStats(data);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'An error occurred');
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchStats();
   }, []);
 
@@ -44,11 +65,39 @@ export const GitHubStats = () => {
     );
   }
 
-  if (error) {
+  if (error || !stats) {
     return (
-      <GlassPanel className="p-6 border-red-500/20 bg-red-500/5">
-        <p className="text-red-400 font-medium">Error: {error}</p>
-      </GlassPanel>
+      <div className="space-y-6">
+        <GlassPanel className="p-8 border-blue-500/20 bg-blue-500/5">
+          <div className="flex flex-col items-center text-center gap-6">
+            <div className="p-4 rounded-2xl bg-blue-500/10">
+              <Link2 size={40} className="text-blue-400" />
+            </div>
+            <div className="space-y-2">
+              <h2 className="text-2xl font-bold text-white">Connect your GitHub</h2>
+              <p className="text-white/40 max-w-sm">
+                Enter your GitHub username to aggregate your contributions and repositories.
+              </p>
+            </div>
+            <form onSubmit={handleConnect} className="flex flex-col sm:flex-row gap-3 w-full max-w-md">
+              <input 
+                type="text" 
+                placeholder="GitHub Username" 
+                value={githubInput}
+                onChange={(e) => setGithubInput(e.target.value)}
+                className="flex-1 px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-white/20 focus:outline-none focus:border-blue-500/50 transition-colors"
+              />
+              <button 
+                type="submit" 
+                disabled={isConnecting}
+                className="px-6 py-3 rounded-xl bg-blue-600 text-white font-bold hover:bg-blue-700 transition-all active:scale-95 disabled:opacity-50"
+              >
+                {isConnecting ? 'Linking...' : 'Connect'}
+              </button>
+            </form>
+          </div>
+        </GlassPanel>
+      </div>
     );
   }
 

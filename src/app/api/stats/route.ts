@@ -1,24 +1,47 @@
 import { NextResponse } from 'next/server';
+import { auth, clerkClient } from '@clerk/nextjs/server';
 
-export const runtime = 'edge';
-
-export async function GET(request: Request) {
-  const { searchParams } = new URL(request.url);
-  const username = searchParams.get('username') || 'octocat';
-
+export async function GET() {
   try {
-    const response = await fetch(`https://api.github.com/users/${username}`, {
-      headers: {
-        'Accept': 'application/vnd.github.v3+json',
-      },
-      next: { revalidate: 3600 } // Cache for 1 hour
-    });
-
-    if (!response.ok) {
-      return NextResponse.json({ error: 'GitHub user not found' }, { status: response.status });
+    const { userId } = await auth();
+    
+    if (!userId) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const data = await response.json();
+    const client = await clerkClient();
+    const user = await client.users.getUser(userId);
+    const metadataUsername = user.publicMetadata.githubUsername as string;
+
+    let githubDataUrl = 'https://api.github.com/user';
+    let headers: Record<string, string> = {
+      'Accept': 'application/vnd.github.v3+json',
+    };
+
+    const tokenResponse = await client.users.getUserOauthAccessToken(
+      userId,
+      'oauth_github'
+    );
+    const token = tokenResponse.data[0]?.token;
+
+    if (metadataUsername) {
+      // If they provided a specific username, fetch that public profile
+      githubDataUrl = `https://api.github.com/users/${metadataUsername}`;
+      if (token) headers['Authorization'] = `Bearer ${token}`;
+    } else if (token) {
+      // Use OAuth token to get their own profile
+      headers['Authorization'] = `Bearer ${token}`;
+    } else {
+      return NextResponse.json({ error: 'GitHub account not linked' }, { status: 404 });
+    }
+
+    const userResponse = await fetch(githubDataUrl, { headers });
+
+    if (!userResponse.ok) {
+      return NextResponse.json({ error: 'Failed to fetch GitHub data' }, { status: userResponse.status });
+    }
+
+    const data = await userResponse.json();
 
     return NextResponse.json({
       repos: data.public_repos,
@@ -29,10 +52,9 @@ export async function GET(request: Request) {
       bio: data.bio,
       location: data.location,
       blog: data.blog,
-      // Mocking stars for now to keep it simple as requested
-      stars: Math.floor(Math.random() * 50) + 10, 
+      stars: Math.floor(Math.random() * 50) + 10, // Keep mock stars for now
     });
-  } catch {
+  } catch (error) {
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
