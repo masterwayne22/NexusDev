@@ -11,7 +11,7 @@ import {
   Zap, 
   ExternalLink,
   Search,
-  Github
+  GitHub
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 

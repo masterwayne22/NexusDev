@@ -21,7 +21,7 @@ export const GitHubStats = () => {
   const [stats, setStats] = useState<Stats | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [githubInput, setGithubInput] = useState('');
+  const [gitHubInput, setGitHubInput] = useState('');
   const [isConnecting, setIsConnecting] = useState(false);
 
   const fetchStats = async () => {
@@ -40,12 +40,12 @@ export const GitHubStats = () => {
 
   const handleConnect = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!githubInput.trim()) return;
+    if (!gitHubInput.trim()) return;
     
     setIsConnecting(true);
     try {
       if (!user?.id) return;
-      await updateUsername(user.id, 'github', githubInput);
+      await updateUsername(user.id, 'github', gitHubInput);
       await session?.reload();
       await fetchStats();
     } catch {
@@ -85,8 +85,8 @@ export const GitHubStats = () => {
               <input 
                 type="text" 
                 placeholder="GitHub Username" 
-                value={githubInput}
-                onChange={(e) => setGithubInput(e.target.value)}
+                value={gitHubInput}
+                onChange={(e) => setGitHubInput(e.target.value)}
                 className="flex-1 px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-white/20 focus:outline-none focus:border-blue-500/50 transition-colors"
               />
               <button 
