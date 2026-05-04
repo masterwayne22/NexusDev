@@ -3,7 +3,7 @@
 import { clerkClient } from '@clerk/nextjs/server';
 import { revalidatePath } from 'next/cache';
 
-export async function updateUsername(userId: string, type: 'github' | 'leetcode', username: string) {
+export async function updateUsername(userId: string, type: 'github' | 'leetcode' | 'codeforces', username: string) {
   const client = await clerkClient();
   await client.users.updateUserMetadata(userId, {
     publicMetadata: {

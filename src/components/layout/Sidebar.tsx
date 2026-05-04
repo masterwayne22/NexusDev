@@ -9,7 +9,8 @@ import {
   Sparkles, 
   Menu, 
   X,
-  User
+  User,
+  Target
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { UserButton, useAuth } from "@clerk/nextjs";
@@ -36,6 +37,7 @@ const navItems = [
   { name: 'Overview', href: '/dashboard', icon: LayoutDashboard },
   { name: 'GitHub', href: '/github', icon: GitHubIcon },
   { name: 'LeetCode', href: '/leetcode', icon: Code2 },
+  { name: 'Codeforces', href: '/codeforces', icon: Target },
   { name: 'AI Insights', href: '/insights', icon: Sparkles },
 ];
 
