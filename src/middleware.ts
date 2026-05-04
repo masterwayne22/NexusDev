@@ -24,4 +24,4 @@ export const config = {
 };
 
 // Ensure the middleware runs on the Edge runtime for Cloudflare compatibility
-export const runtime = "edge";
+export const runtime = "experimental-edge";
