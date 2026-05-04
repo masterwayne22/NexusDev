@@ -1,0 +1,17 @@
+{
+  "/_global-error/page": "/_global-error",
+  "/_not-found/page": "/_not-found",
+  "/api/codeforces/route": "/api/codeforces",
+  "/api/insights/route": "/api/insights",
+  "/api/leetcode/route": "/api/leetcode",
+  "/api/stats/route": "/api/stats",
+  "/codeforces/page": "/codeforces",
+  "/dashboard/page": "/dashboard",
+  "/favicon.ico/route": "/favicon.ico",
+  "/github/page": "/github",
+  "/insights/page": "/insights",
+  "/leetcode/page": "/leetcode",
+  "/page": "/",
+  "/sign-in/[[...sign-in]]/page": "/sign-in/[[...sign-in]]",
+  "/sign-up/[[...sign-up]]/page": "/sign-up/[[...sign-up]]"
+}
