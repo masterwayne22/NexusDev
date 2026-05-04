@@ -10,8 +10,7 @@ import {
   Code, 
   Zap, 
   ExternalLink,
-  Search,
-  GitHub
+  Search
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
