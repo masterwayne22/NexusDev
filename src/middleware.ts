@@ -22,3 +22,6 @@ export const config = {
     '/(api|trpc)(.*)',
   ],
 };
+
+// Ensure the middleware runs on the Edge runtime for Cloudflare compatibility
+export const runtime = "edge";
