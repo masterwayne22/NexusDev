@@ -3,6 +3,7 @@ import { GlassPanel } from "@/components/ui/GlassPanel";
 import { ArrowLeft, Sparkles, BrainCircuit } from "lucide-react";
 import { AIInsights } from "@/components/dashboard/AIInsights";
 import { RevisionAssistant } from "@/components/dashboard/RevisionAssistant";
+import { OpportunityExplorer } from "@/components/dashboard/OpportunityExplorer";
 
 export default function InsightsPage() {
   return (
@@ -52,6 +53,8 @@ export default function InsightsPage() {
           </p>
         </GlassPanel>
       </div>
+
+      <OpportunityExplorer />
     </div>
   );
 }
