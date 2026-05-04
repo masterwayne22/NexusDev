@@ -2,6 +2,7 @@ import Link from "next/link";
 import { GlassPanel } from "@/components/ui/GlassPanel";
 import { ArrowLeft, Sparkles, BrainCircuit } from "lucide-react";
 import { AIInsights } from "@/components/dashboard/AIInsights";
+import { RevisionAssistant } from "@/components/dashboard/RevisionAssistant";
 
 export default function InsightsPage() {
   return (
@@ -27,6 +28,8 @@ export default function InsightsPage() {
       </header>
 
       <AIInsights />
+
+      <RevisionAssistant />
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <GlassPanel className="p-6 space-y-4">

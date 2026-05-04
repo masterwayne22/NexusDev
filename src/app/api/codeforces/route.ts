@@ -24,21 +24,53 @@ export async function GET() {
 
     const userInfo = infoData.result[0];
 
-    // Fetch user submissions to calculate solved count
+    // Fetch user submissions to calculate solved count and weak areas
     const statusRes = await fetch(`https://codeforces.com/api/user.status?handle=${username}`);
     const statusData = await statusRes.json();
 
     let solvedCount = 0;
+    const tagStats: Record<string, { solved: number; total: number }> = {};
+    const unsolvedProblems: any[] = [];
+
     if (statusData.status === 'OK') {
-      const solvedProblems = new Set();
+      const solvedProblemIds = new Set();
+      
       statusData.result.forEach((submission: any) => {
+        const problemId = `${submission.problem.contestId}${submission.problem.index}`;
+        const tags = submission.problem.tags || [];
+
+        tags.forEach((tag: string) => {
+          if (!tagStats[tag]) tagStats[tag] = { solved: 0, total: 0 };
+          tagStats[tag].total++;
+        });
+
         if (submission.verdict === 'OK') {
-          const problemId = `${submission.problem.contestId}${submission.problem.index}`;
-          solvedProblems.add(problemId);
+          if (!solvedProblemIds.has(problemId)) {
+            solvedCount++;
+            solvedProblemIds.add(problemId);
+            tags.forEach((tag: string) => tagStats[tag].solved++);
+          }
+        } else {
+          unsolvedProblems.push({
+            id: problemId,
+            name: submission.problem.name,
+            rating: submission.problem.rating,
+            tags: submission.problem.tags
+          });
         }
       });
-      solvedCount = solvedProblems.size;
     }
+
+    // Identify weak tags (high attempt/solved ratio or low solved count in common topics)
+    const weakTopics = Object.entries(tagStats)
+      .map(([tag, stats]) => ({
+        tag,
+        accuracy: stats.solved / stats.total,
+        solved: stats.solved
+      }))
+      .filter(item => item.solved < 5 || item.accuracy < 0.6)
+      .sort((a, b) => a.accuracy - b.accuracy)
+      .slice(0, 3);
 
     return NextResponse.json({
       username: userInfo.handle,
@@ -46,7 +78,9 @@ export async function GET() {
       maxRating: userInfo.maxRating || 0,
       rank: userInfo.rank || 'Unranked',
       maxRank: userInfo.maxRank || 'Unranked',
-      solved: solvedCount
+      solved: solvedCount,
+      weakTopics,
+      recommendations: unsolvedProblems.slice(0, 3)
     });
   } catch (error) {
     console.error('Codeforces API Error:', error);

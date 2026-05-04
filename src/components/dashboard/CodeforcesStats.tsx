@@ -5,6 +5,7 @@ import { GlassPanel } from '@/components/ui/GlassPanel';
 import { Trophy, Loader2, Link2, Target, Zap, Award } from 'lucide-react';
 import { useSession, useUser } from '@clerk/nextjs';
 import { updateUsername } from '@/app/actions';
+import { WeakAreaAnalysis } from './WeakAreaAnalysis';
 
 interface CodeforcesData {
   username: string;
@@ -13,6 +14,8 @@ interface CodeforcesData {
   rank: string;
   maxRank: string;
   solved: number;
+  weakTopics: Array<{ tag: string; accuracy: number; solved: number }>;
+  recommendations: Array<{ name: string; rating: number; tags: string[] }>;
 }
 
 export const CodeforcesStats = () => {
@@ -147,6 +150,12 @@ export const CodeforcesStats = () => {
           </p>
         </GlassPanel>
       </div>
+
+      <WeakAreaAnalysis 
+        weakTopics={data.weakTopics} 
+        recommendations={data.recommendations} 
+        platform="codeforces" 
+      />
     </div>
   );
 };

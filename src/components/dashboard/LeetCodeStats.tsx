@@ -5,6 +5,7 @@ import { GlassPanel } from '@/components/ui/GlassPanel';
 import { Code2, Loader2, Link2, Trophy, Flame } from 'lucide-react';
 import { useSession, useUser } from '@clerk/nextjs';
 import { updateUsername } from '@/app/actions';
+import { WeakAreaAnalysis } from './WeakAreaAnalysis';
 
 interface LeetCodeData {
   username: string;
@@ -13,6 +14,8 @@ interface LeetCodeData {
   hard: number;
   ranking: number;
   streak: number;
+  weakTopics: Array<{ tag: string; accuracy: number; solved: number }>;
+  recommendations: Array<{ name: string; difficulty: string; id: string }>;
 }
 
 export const LeetCodeStats = () => {
@@ -131,6 +134,12 @@ export const LeetCodeStats = () => {
           <div className="text-4xl font-black text-white">{data.streak} Days</div>
         </GlassPanel>
       </div>
+
+      <WeakAreaAnalysis 
+        weakTopics={data.weakTopics} 
+        recommendations={data.recommendations} 
+        platform="leetcode" 
+      />
     </div>
   );
 };
